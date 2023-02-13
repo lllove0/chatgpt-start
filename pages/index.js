@@ -5,9 +5,11 @@ import styles from "./index.module.css";
 export default function Home() {
   const [questionInput, setQuestionInput] = useState("");
   const [result, setResult] = useState();
-
+	const [isLoading, setIsLoading] = useState(false);
+ 
   async function onSubmit(event) {
     event.preventDefault();
+		setIsLoading(true);
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
@@ -16,16 +18,18 @@ export default function Home() {
         },
         body: JSON.stringify({ question: questionInput }),
       });
-
+			
       const data = await response.json();
       if (response.status !== 200) {
         throw data.error || new Error(`Request failed with status ${response.status}`);
       }
 
       setResult(data.result);
+			setIsLoading(false);
       setQuestionInput("");
     } catch(error) {
       // Consider implementing your own error handling logic here
+			setIsLoading(false);
       console.error(error);
       alert(error.message);
     }
@@ -51,6 +55,7 @@ export default function Home() {
           />
           <input type="submit" value="提交" />
         </form>
+				{isLoading && <p className={styles.loading}>loading...</p>}
         <div className={styles.result}>{result}</div>
       </main>
     </div>
