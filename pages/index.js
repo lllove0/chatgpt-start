@@ -9,6 +9,7 @@ export default function Home() {
  
   async function onSubmit(event) {
     event.preventDefault();
+		setResult("");
 		setIsLoading(true);
     try {
       const response = await fetch("/api/generate", {
@@ -24,7 +25,7 @@ export default function Home() {
         throw data.error || new Error(`Request failed with status ${response.status}`);
       }
 
-      setResult(data.result);
+      setResult(`问题：${questionInput}${data.result}`);
 			setIsLoading(false);
       setQuestionInput("");
     } catch(error) {
@@ -55,9 +56,9 @@ export default function Home() {
           />
           <input type="submit" value="提交" />
         </form>
-				{isLoading && <p className={styles.loading}>loading...</p>}
-        <div className={styles.result}>{result}</div>
+				{isLoading && <p className={styles.loading}>loading...</p>}  
       </main>
+			<div className={styles.result}>{result}</div>
     </div>
   );
 }
